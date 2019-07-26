@@ -1,0 +1,25 @@
+﻿@typeparam TValue
+
+<div class="form-group">
+    <select class="form-control" @onchange="@HandleOnChanged">
+        @ChildContent
+    </select>
+</div>
+
+@code {
+    protected Task HandleOnChanged( UIChangeEventArgs e )
+    {
+        if ( Converters.TryChangeType<TValue>( e.Value, out var value ) )
+            Value = value;
+        else
+            Value = default;
+
+        return SelectedValue.InvokeAsync( Value );
+    }
+
+    [Parameter] public TValue Value { get; set; }
+
+    [Parameter] public EventCallback<TValue> SelectedValue { get; set; }
+
+    [Parameter] protected RenderFragment ChildContent { get; set; }
+}
